@@ -7,7 +7,12 @@
 import app from "../app.js"
 import dbg from "debug"
 import http from 'http'
+import mongoose from "mongoose";
+import connectMongo from "../config/dbConnect.js";
+import { loadEnvFile } from "process";
 const debug = dbg('sellit:server');
+loadEnvFile('.env')
+
 
 /**
  * Get port from environment and store in Express.
@@ -22,11 +27,13 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+
 /**
  * Listen on provided port, on all network interfaces.
  */
-
-server.listen(port);
+connectMongo().then(()=> {
+  server.listen(port);
+}).catch((err)=> console.log(err))
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -87,5 +94,6 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+    console.log('Listening on ' + bind);
+  // debug('Listening on ' + bind);
 }
