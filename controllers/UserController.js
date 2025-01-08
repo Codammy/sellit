@@ -5,9 +5,8 @@ export async function createNewUser(req, res, next) {
     try {
        await user.save();
     } catch(err) {
-        err.status =  (err._message === 'users validation failed'  || err.code === 11000) ? 400 : 500;
+        err.status =  (err._message === 'User validation failed'  || err.code === 11000) ? 400 : 500;
         err.message = err.code === 11000 ? `${JSON.stringify(err.keyValue)} already exist` : (err._message || err.message)
-        console.log(err)
         return next(err);
     }
 
@@ -16,17 +15,14 @@ export async function createNewUser(req, res, next) {
 
 export async function getUserById(req, res, next) {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.params.id).populate('store');
         if (!user){
-            let err = new Error("user not found");
-            err.status = 404
-            return next(err)
+            return res.status(404).json({error: "User not found"})
         }
-        const {id, email, profile, addr, social, subscription} = user;
-        return res.json({data: {id, email, profile, addr, social, subscription}});
+        console.log(user)
+        const {id, email, profile, addr, social, subscription, store} = user;
+        return res.json({data: {id, email, profile, addr, social, subscription, store}});
     } catch (err) {
-            err = new Error("user not found");
-            err.status = 404
             return next(err)    
         }
 }

@@ -24,7 +24,8 @@ const userSchema = new Schema({
         website: String,
     },
     emailVerified: Boolean,
-    subscription: {type: String, enum: ['paid', 'free'], default: 'free'}
+    subscription: {type: String, enum: ['paid', 'free'], default: 'free'},
+    store: {type: Schema.Types.ObjectId, ref: 'Store'}
 }, {timestamps: true});
 
 userSchema.pre('save', function(next) {
@@ -39,6 +40,6 @@ userSchema.pre('save', function(next) {
     })
 })
 
-const User = model('users', userSchema);
+const User = model('User', userSchema);
 User.syncIndexes().catch((err)=> {throw new Error(err)});
 export default User;
