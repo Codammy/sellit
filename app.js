@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url'
 import indexRouter from './routes/index.js'
 import usersRouter from './routes/users.js'
 import storesRouter from './routes/stores.js'
+import itemsRouter from './routes/items.js'
+import reviewsRouter from './routes/reviews.js'
 import { authenticate } from './controllers/AuthController.js'
 
 const app = express();
@@ -27,6 +29,8 @@ app.use(authenticate)
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/stores', storesRouter);
+app.use('/items', itemsRouter);
+app.use('/reviews', reviewsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

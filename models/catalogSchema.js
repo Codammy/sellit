@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const catalogSchema = new mongoose.Schema({
     user: {type: mongoose.Types.ObjectId, ref: 'User'},
-    item: {type: mongoose.Types.ObjectId, ref: 'Item'}
+    item: {type: mongoose.Types.ObjectId, ref: 'Item', unique: true}
 }, {timestamps: true})
 
 const Catalog = mongoose.model('Catalog', catalogSchema)
