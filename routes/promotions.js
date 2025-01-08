@@ -9,7 +9,7 @@ router.get('/:id')
 
 router.delete('/:id');
 
-router.post('/sellit')
+router.post('/in-app')
 
 router.post('/facebook')
 
