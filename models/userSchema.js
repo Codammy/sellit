@@ -24,7 +24,7 @@ const userSchema = new Schema({
         website: String,
     },
     emailVerified: Boolean,
-    subscription: {type: String, enum: ['paid', 'free']}
+    subscription: {type: String, enum: ['paid', 'free'], default: 'free'}
 }, {timestamps: true});
 
 userSchema.pre('save', function(next) {
