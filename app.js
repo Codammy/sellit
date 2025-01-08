@@ -9,6 +9,7 @@ import usersRouter from './routes/users.js'
 import storesRouter from './routes/stores.js'
 import itemsRouter from './routes/items.js'
 import reviewsRouter from './routes/reviews.js'
+import promotionsRouter from './routes/promotions.js'
 import { authenticate } from './controllers/AuthController.js'
 
 const app = express();
@@ -28,9 +29,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(authenticate)
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/stores', storesRouter);
 app.use('/items', itemsRouter);
+app.use('/stores', storesRouter);
 app.use('/reviews', reviewsRouter);
+app.use('/promotions', promotionsRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -47,6 +49,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json({'error': err.message});
 });
-
 
 export default app;
