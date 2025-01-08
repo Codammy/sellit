@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 
 const storeSchema = new mongoose.Schema({
-    owner: {type: mongoose.Types.ObjectId},
+    ownerId: {type: mongoose.Types.ObjectId, required: true},
     name: {type: String, unique: true, required: true},
-    upvotes: Number,
+    upvotes: {type: Number, default: 0},
     description: String,
+    items: {type: [mongoose.Types.ObjectId], ref: 'Item'}
 }, {timestamps: true})
 
 const Store = mongoose.model('Store', storeSchema)

@@ -1,4 +1,5 @@
 import Item from '../models/itemSchema.js'
+import Store from '../models/storeSchema.js';
 
 export async function getAllItems(req, res, next) {
     try {
@@ -21,7 +22,12 @@ export async function getItemById(req, res, next) {
 
 export async function createItem(req, res, next) {
     const item = new Item(req.body);
+    if (!req.storeId) return res.status(400).json({error: "store id required"})
     try {
+        const store = await Store.find({_id: item.storeId});
+        if (store) return res.status(404).json({error: "store not found"})
+            store.items.push(item._id)
+        store.save()
         await item.save();
         return res.json({data: item})
     } catch(err) {

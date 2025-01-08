@@ -20,7 +20,7 @@ export async function getReviewById(req, res, next) {
 }
 
 export async function createReview(req, res, next) {
-    const review = new Review(req.body);
+    const review = new Review({...req.body, reviewerId: req.user.id});
     try {
         await review.save();
         return res.json({data: review})

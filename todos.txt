@@ -1,12 +1,7 @@
-// unsolved
-make store populate work properly for users
-
 // todo
 pagination, filtering
 caching - redis
-items resource/endpoint
-cart/
-promotion resource/endpoint
+date tracking
 user password reset
 
 // might do

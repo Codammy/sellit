@@ -11,7 +11,7 @@ export async function getAllCatalogs(req, res, next) {
 
 export async function getCatalogById(req, res, next) {
     try {
-        const catalog = await Catalog.findById(req.params.id);
+        const catalog = await Catalog.findById(req.params.id).populate('items');
         if (!catalog) return res.status(404).json({err: "Catalog not found"})
         return res.json({data: catalog})
     } catch(err) {
@@ -20,7 +20,7 @@ export async function getCatalogById(req, res, next) {
 }
 
 export async function createCatalog(req, res, next) {
-    const catalog = new Catalog(req.body);
+    const catalog = new Catalog({...req.body, userId: req.user.id});
     try {
         await catalog.save();
         return res.json({data: catalog})

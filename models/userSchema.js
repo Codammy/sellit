@@ -11,12 +11,12 @@ const userSchema = new Schema({
     },
     ratings: {type: Number, default: 0},
     password: {type: String, required: true},
-    addr: {
+    address: {
         city: String,
         state: String,
-        address: String,
+        addr: String,
     },
-    social: {
+    socials: {
         whatsappNo: {type: String, maxLength: 14},
         pic_url: String,
         facebookUrl: String,
@@ -25,7 +25,8 @@ const userSchema = new Schema({
     },
     emailVerified: Boolean,
     subscription: {type: String, enum: ['paid', 'free'], default: 'free'},
-    store: {type: Schema.Types.ObjectId, ref: 'Store'}
+    accountType: {type: String, enum: ['regular', 'promoter', 'admin'], default: 'regular'},
+    stores: {type: [Schema.Types.ObjectId], ref: 'Store'}
 }, {timestamps: true});
 
 userSchema.pre('save', function(next) {

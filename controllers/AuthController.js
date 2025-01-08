@@ -22,7 +22,7 @@ export default async function login(req, res, next) {
             err.status = 401
             return next(err)
         }
-        const token = jwt.sign({id, email, ...profile}, process.env.SECRET, {expiresIn: 3600});
+        const token = jwt.sign({id, email, ...profile, subscription}, process.env.SECRET, {expiresIn: 3600});
         // res.header({Authorization: `Bearer ${token}`})
         return res.json({data: {id, email, profile, addr, social, subscription, token}});
     } catch(err) {

@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema({
-    reviewer: {type: mongoose.Types.ObjectId, ref: 'User'},
+    reviewerId: {type: mongoose.Types.ObjectId, ref: 'User'},
     comment: {type: String, unique: true, required: true},
-}, {timestamps: true})
+}, {timestamps: true});
 
 const Review = mongoose.model('Review', reviewSchema)
 
