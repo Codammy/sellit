@@ -22,8 +22,8 @@ export async function getUserById(req, res, next) {
             err.status = 404
             return next(err)
         }
-        const {email, profile, addr, social, subscription} = user;
-        return res.json({data: {email, profile, addr, social, subscription}});
+        const {id, email, profile, addr, social, subscription} = user;
+        return res.json({data: {id, email, profile, addr, social, subscription}});
     } catch (err) {
             err = new Error("user not found");
             err.status = 404
@@ -31,10 +31,18 @@ export async function getUserById(req, res, next) {
         }
 }
 
+export function getAuthenticatedUser(req, res, next) {
+    return res.json(req.user);
+}
+
 export async function updateUser(req, res, next) {
     try {
         const {profile, addr, social} = {...req.body};
+        console.log(profile)
+        await User.findOneAndUpdate({_id: req.user.id}, {profile: profile, addr: addr, social: social});
+        return res.json({success: true})
     } catch (error) {
-        
+        console.log(error)
+                return next(error)
     }
 }
