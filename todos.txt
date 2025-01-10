@@ -2,6 +2,7 @@
 pagination, filtering
 caching - redis
 date tracking
+global user object
 user password reset
 
 // might do

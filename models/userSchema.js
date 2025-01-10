@@ -1,4 +1,4 @@
-import  {Schema, model} from "mongoose"
+import  mongoose, {Schema, model} from "mongoose"
 import bcrypt from "bcrypt"
 
 const userSchema = new Schema({
@@ -25,18 +25,22 @@ const userSchema = new Schema({
     },
     emailVerified: Boolean,
     subscription: {type: String, enum: ['paid', 'free'], default: 'free'},
+    catalog: {type: [mongoose.Types.ObjectId], ref: 'Item'},
     accountType: {type: String, enum: ['regular', 'promoter', 'admin'], default: 'regular'},
     stores: {type: [Schema.Types.ObjectId], ref: 'Store'}
 }, {timestamps: true});
 
 userSchema.pre('save', function(next) {
     const user = this
+    if (!user.isModified("password")) {
+        return next();
+    }
     bcrypt.genSalt(10, (err, result)=> {
         if (err) return next(err)
         bcrypt.hash(user.password, result, function(err, hash){
         if (err) return next(err);
             user.password = hash;
-            next()
+            next();
         });
     })
 })

@@ -25,7 +25,6 @@ export async function createStore(req, res, next) {
         const store = new Store({...req.body, ownerId: req.user.id});
         const user = await User.findOne({_id: req.user.id});
 
-        console.log(user.subscription, user.stores.length)
         if (user.subscription === 'free' && (user.stores.length > 0)) {
             return res.status(400).json({error: "upgrade account to PAID plan to continue"})
         }
@@ -58,7 +57,7 @@ export async function deleteStore(req, res, next) {
         const store = await Store.findById(req.params.id)
         if (!store) return res.status(404).json({err: "Store not found"})
         const user = await User.findOne({_id: store.ownerId});
-        user.stores = user.stores.filter((store)=> store !== req.params.id)
+        user.stores = user.stores.filter((store)=> store.toString() !== req.params.id)
         await Store.deleteOne({_id: req.params.id})
         await user.save()
         return res.json({success: true, message: "Store deleted successfully"})

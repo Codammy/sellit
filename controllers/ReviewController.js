@@ -1,4 +1,5 @@
 import Review from '../models/reviewSchema.js'
+import Store from '../models/storeSchema.js';
 
 export async function getAllReviews(req, res, next) {
     try {
@@ -21,6 +22,9 @@ export async function getReviewById(req, res, next) {
 
 export async function createReview(req, res, next) {
     const review = new Review({...req.body, reviewerId: req.user.id});
+    if (review.storeId && review.itemId) return res.status(400).json({error: "Item or store can only be reviewed at a time"})
+    if (review.on === 'store' && !review.storeId) return res.status(400).json({error: "storeId required on store review"})
+    if (review.on === 'item' && !review.itemId) return res.status(400).json({error: "itemid required on item review"})
     try {
         await review.save();
         return res.json({data: review})
