@@ -1,6 +1,5 @@
 import User from '../models/userSchema.js'
 import Item from '../models/itemSchema.js'
-import {mongoose} from 'mongoose'
 
 export async function getAllCatalogs(req, res, next) {
     try {

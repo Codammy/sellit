@@ -33,7 +33,7 @@ export async function getUserById(req, res, next) {
         }
 }
 
-export function getAuthenticatedUser(req, res, next) {
+export function getAuthenticatedUser(req, res) {
     return res.json(req.user);
 }
 

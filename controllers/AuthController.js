@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
 import User from "../models/userSchema.js"
+import process from "process"
 
 export default async function login(req, res, next) {
     const {email, password} = {...req.body}

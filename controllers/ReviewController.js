@@ -1,5 +1,4 @@
 import Review from '../models/reviewSchema.js'
-import Store from '../models/storeSchema.js';
 
 export async function getAllReviews(req, res, next) {
     try {
