@@ -1,4 +1,5 @@
 // todo
+// token storage on redis
 pagination, filtering
 caching - redis
 date tracking

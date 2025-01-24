@@ -3,6 +3,7 @@ import bcrypt from "bcrypt"
 import User from "../models/userSchema.js"
 import process from "process"
 
+
 export default async function login(req, res, next) {
     const {email, password} = {...req.body}
     if (!email) return res.json({error: "Email required"});
@@ -31,9 +32,48 @@ export default async function login(req, res, next) {
     }
 }
 
+export async function passwordResetRequest(req, res) {
+    const {email, password, rPassword } = {...req.body}
+    try {
+        const user = await  User.findOne({email});
+        if (user) {
+            return res.json({"password-reset-token": jwt.sign(user.email, process.env.SECRET, {expiresIn: 3600})});
+            // job to send email
+        }
+    } catch (err){
+        return next(err)
+    }
+    return res.json({error: "Email not found!"})
+}
+
+export async function resetPasswordPage(req, res, next) {
+    const {token} = {...req.params};
+    console.log(token)
+    try {
+        // jwt.verify(token, process.env.SECRET);
+        return res.render('passwordReset', {token});
+    } catch (err) {
+        return next(err)
+    }
+}
+
+export async function resetPassword(req, res, next) {
+    const {password, rPassowrd, passwordResetToken} = {...req.body};
+    if (password !== rPassword) return res.status(400).json({error: 'Confirm password wrong'})
+
+    console.log(req.body)
+    try {
+        // const data = jwt.verify(passwordResetToken, process.env.SECRET)
+        // await User.updateOne({email: data.email}, {$set: {password: password}})
+        return res.render('passwordResetOk')
+    } catch (err) {
+        return next(err);
+    }
+}
+
 export async function authenticate(req, res, next) {
-    const freeToAir = ['/status', '/login', '/users/new', '/']
-    if (freeToAir.includes(req.path)) return next()
+    const freeToAir = ['/status', '/login', '/users/new', '/', '/users/reset_password', '/favicon.ico' ]
+    if (freeToAir.includes(req.path) || req.path.startsWith('/users/password_reset/')) return next()
     const {authorization} = {...req.headers}
     if (!authorization) return res.status(401).json({error: "Invalid authentication"})
     const [bearer, token] = authorization.trim(' ').split(' ')

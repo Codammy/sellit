@@ -51,4 +51,7 @@ app.use(function(err, req, res, next) {
   res.json({'error': err.message});
 });
 
+export {
+  __dirname
+}
 export default app;
