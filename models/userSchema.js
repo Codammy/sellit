@@ -32,6 +32,7 @@ const userSchema = new Schema({
 
 userSchema.pre('save', function(next) {
     const user = this
+    console.log("got here")
     if (!user.isModified("password")) {
         return next();
     }
@@ -44,6 +45,10 @@ userSchema.pre('save', function(next) {
         });
     })
 })
+
+userSchema.statics.findAllPaginated = async function () {
+    
+}
 
 const User = model('User', userSchema);
 User.syncIndexes().catch((err)=> {throw new Error(err)});

@@ -14,8 +14,6 @@ router.delete('/catalog/:id', removeFromCatalog)
 
 router.get('/me', getAuthenticatedUser);
 
-router.get('/:id', getUserById);
-
 router.post('/new', createNewUser)
 
 router.put('/', updateUser);
@@ -24,6 +22,8 @@ router.get('/password_reset', passwordResetRequest);
 
 router.get('/password_reset/:token', resetPasswordPage)
 
+
 router.post ('/reset_password', resetPassword);
 
+router.get('/:id', getUserById);
 export default router;

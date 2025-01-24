@@ -2,14 +2,16 @@ import nodemailer from 'nodemailer';
 import { configDotenv } from 'dotenv';
 configDotenv()
 
-console.log(process.env.MAIL_PROVIDER, process.env.MAIL_USER_PASSWORD)
 const mailTransporter = nodemailer.createTransport({
     host: process.env.MAIL_PROVIDER,
     port: process.MAIL_PROVIDER_PORT,
-    secure: true,
+    secure: false,
     auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_USER_PASSWORD
+        user: process.env.ETHEREAL_MAIL_USER,
+        pass: process.env.ETHEREAL_USER_PASSWORD
+    },
+        tls: {
+        rejectUnauthorized: false, 
     },
     logger: true,
     debug: true

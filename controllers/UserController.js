@@ -2,7 +2,7 @@ import User from "../models/userSchema.js"
 import Store from '../models/storeSchema.js'
 
 export async function createNewUser(req, res, next) {
-    console.log(req.body)
+    console.log("got here");
     const user = new User(req.body);
     let store;
     try {
@@ -40,9 +40,11 @@ export function getAuthenticatedUser(req, res) {
 export async function updateUser(req, res, next) {
     try {
         const {profile, addr, social} = {...req.body};
+        // if (!profile || !addr || !social) return res.status(400).json({error: "Bad Request"})
         await User.findOneAndUpdate({_id: req.user.id}, {profile, addr, social});
+        return res.json({data: {profile, addr, social}})
     } catch (error) {
         console.log(error)
-                return next(error)
+        return next(error)
     }
 }

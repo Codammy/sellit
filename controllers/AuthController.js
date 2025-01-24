@@ -2,6 +2,10 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
 import User from "../models/userSchema.js"
 import process from "process"
+import emailQueue from "./emailQueue.js";
+import ejs from "ejs";
+import path from "path";
+import { __dirname } from "../app.js";
 
 
 export default async function login(req, res, next) {
@@ -32,13 +36,20 @@ export default async function login(req, res, next) {
     }
 }
 
-export async function passwordResetRequest(req, res) {
-    const {email, password, rPassword } = {...req.body}
+export async function passwordResetRequest(req, res, next) {
+    const {email} = {...req.body}
+    if (!email) return res.status(400).json({error: "Email is required"})
     try {
         const user = await  User.findOne({email});
         if (user) {
-            return res.json({"password-reset-token": jwt.sign(user.email, process.env.SECRET, {expiresIn: 3600})});
-            // job to send email
+            user.token = jwt.sign({user}, process.env.SECRET, {expiresIn: 3600})
+            emailQueue.add({
+                to: user.email,
+                subject: "Forgot Password",
+                text: "You requested to reset your password",
+                html: await ejs.renderFile(path.join(__dirname, "views", "passwordResetVerify.ejs"), {user})
+            });
+            return res.json({message: "A mail has been sent to your mail to reset your password"});
         }
     } catch (err){
         return next(err)
@@ -50,7 +61,7 @@ export async function resetPasswordPage(req, res, next) {
     const {token} = {...req.params};
     console.log(token)
     try {
-        // jwt.verify(token, process.env.SECRET);
+        jwt.verify(token, process.env.SECRET);
         return res.render('passwordReset', {token});
     } catch (err) {
         return next(err)
@@ -58,22 +69,26 @@ export async function resetPasswordPage(req, res, next) {
 }
 
 export async function resetPassword(req, res, next) {
-    const {password, rPassowrd, passwordResetToken} = {...req.body};
+    const {password, rPassword, passwordResetToken} = {...req.body};
     if (password !== rPassword) return res.status(400).json({error: 'Confirm password wrong'})
 
     console.log(req.body)
     try {
-        // const data = jwt.verify(passwordResetToken, process.env.SECRET)
-        // await User.updateOne({email: data.email}, {$set: {password: password}})
-        return res.render('passwordResetOk')
+        const {user} = jwt.verify(passwordResetToken, process.env.SECRET)
+        console.log(user)
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(password, salt);
+        if (await User.updateOne({email: user.email}, {$set: {password: hashedPassword}})){
+            return res.render('passwordResetOk');
+        } return res.send('<h1>An error occured</h1>')
     } catch (err) {
-        return next(err);
+        return next(  err  );
     }
 }
 
 export async function authenticate(req, res, next) {
     const freeToAir = ['/status', '/login', '/users/new', '/', '/users/reset_password', '/favicon.ico' ]
-    if (freeToAir.includes(req.path) || req.path.startsWith('/users/password_reset/')) return next()
+    if (freeToAir.includes(req.path) || req.path.startsWith('/users/password_reset')) return next()
     const {authorization} = {...req.headers}
     if (!authorization) return res.status(401).json({error: "Invalid authentication"})
     const [bearer, token] = authorization.trim(' ').split(' ')
