@@ -1,10 +1,7 @@
 // todo
-// token storage on redis
-pagination, filtering
+pagination, filtering. filtering
 caching - redis
 date tracking
-global user object
-user password reset
 
 // might do
 landing page

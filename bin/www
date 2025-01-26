@@ -7,7 +7,7 @@
 import app from "../app.js"
 import dbg from "debug"
 import http from 'http'
-import mongoose from "mongoose";
+import redisConnect from "../config/redisConfig.js"
 import connectMongo from "../config/dbConnect.js";
 import { loadEnvFile } from "process";
 const debug = dbg('sellit:server');
@@ -97,3 +97,6 @@ function onListening() {
     console.log('Listening on ' + bind);
   // debug('Listening on ' + bind);
 }
+
+const redisClient = await redisConnect();
+export {redisClient}

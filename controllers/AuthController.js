@@ -19,9 +19,10 @@ export default async function login(req, res, next) {
             err.status = 404
             return next(err);
         }
-
-        const {id, profile, addr, social, subscription} = user;
+        const {id, profile, addr, social, subscription, emailVerified} = user;
         const passwd = user.password;
+
+        if (!emailVerified) return res.status(401).json({error: "Verify email to login"})
 
         if (!await bcrypt.compare(password, passwd)) {
             const err = new Error('Password incorrect');
@@ -41,6 +42,7 @@ export async function passwordResetRequest(req, res, next) {
     if (!email) return res.status(400).json({error: "Email is required"})
     try {
         const user = await  User.findOne({email});
+        if (!user) return res.status(400).json({error: "Email not found in db"})
         if (user) {
             user.token = jwt.sign({user}, process.env.SECRET, {expiresIn: 3600})
             emailQueue.add({
@@ -87,8 +89,8 @@ export async function resetPassword(req, res, next) {
 }
 
 export async function authenticate(req, res, next) {
-    const freeToAir = ['/status', '/login', '/users/new', '/', '/users/reset_password', '/favicon.ico' ]
-    if (freeToAir.includes(req.path) || req.path.startsWith('/users/password_reset')) return next()
+    const freeToAir = ['/status', '/login', '/users/new', '/', '/users/reset-password', '/users/request-email-verify', '/users/verify-email', '/users/forgot-password', '/favicon.ico' ]
+    if (freeToAir.includes(req.path) || freeToAir.includes(req.path.slice(0, -1)) || req.path.startsWith('/users/password-reset')) return next()
     const {authorization} = {...req.headers}
     if (!authorization) return res.status(401).json({error: "Invalid authentication"})
     const [bearer, token] = authorization.trim(' ').split(' ')

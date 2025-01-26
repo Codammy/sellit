@@ -2,9 +2,10 @@ import User from '../models/userSchema.js'
 import Item from '../models/itemSchema.js'
 
 export async function getAllCatalogs(req, res, next) {
+        const pageSize = 20
+    const page = (!req.query.page || parseInt(req.query.page, 10) < 0) ? 0 : parseInt(req.query.page, 10);
     try {
         const user = await User.findOne({_id: req.query.userId}).populate('catalog');
-        console.log(user)
         if (!user) return res.status(400).json({error: "User Id not found"})
         return res.json({data: user.catalog})
     } catch(err) {

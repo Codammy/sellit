@@ -1,9 +1,19 @@
 import Review from '../models/reviewSchema.js'
 
 export async function getAllReviews(req, res, next) {
+        const pageSize = 20
+    const page = (!req.query.page || parseInt(req.query.page, 10) < 0) ? 0 : parseInt(req.query.page, 10);
     try {
-        const reviews = await Review.find();
-        return res.json({data: reviews})
+        const reviews = await Review.aggregate([
+            {$match: {}},
+            {
+                $facet: {
+                    metadata: [{$count: 'totalCount'}],
+                    data: [{$skip: page * pageSize}, {$limit: pageSize}]
+                }
+            }
+        ]);
+        return res.json(reviews)
     } catch(err) {
        return next(err);
     }

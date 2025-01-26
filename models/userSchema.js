@@ -27,7 +27,8 @@ const userSchema = new Schema({
     subscription: {type: String, enum: ['paid', 'free'], default: 'free'},
     catalog: {type: [mongoose.Types.ObjectId], ref: 'Item'},
     accountType: {type: String, enum: ['regular', 'promoter', 'admin'], default: 'regular'},
-    stores: {type: [Schema.Types.ObjectId], ref: 'Store'}
+    stores: {type: [Schema.Types.ObjectId], ref: 'Store'},
+    otp: {type: String, maxLength: 6, minLength: 6}
 }, {timestamps: true});
 
 userSchema.pre('save', function(next) {

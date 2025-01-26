@@ -2,9 +2,20 @@ import Item from '../models/itemSchema.js'
 import Store from '../models/storeSchema.js';
 
 export async function getAllItems(req, res, next) {
+    const pageSize = 20
+    const page = (!req.query.page || parseInt(req.query.page, 10) < 0) ? 0 : parseInt(req.query.page, 10);
+
     try {
-        const items = await Item.find();
-        return res.json({data: items})
+        const items = await Item.aggregate([
+            {$match: {}},
+            {
+                $facet: {
+                    metadata: [{$count: 'totalCount'}],
+                    data: [{$skip: page * pageSize}, {$limit: pageSize}]
+                }
+            }
+        ]);
+        return res.json(items)
     } catch(err) {
        return next(err);
     }

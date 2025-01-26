@@ -2,9 +2,20 @@ import Store from '../models/storeSchema.js'
 import User from '../models/userSchema.js'
 
 export async function getAllStores(req, res, next) {
+    const pageSize = 20
+    const page = (!req.query.page || parseInt(req.query.page, 10) < 0) ? 0 : parseInt(req.query.page, 10);
+
     try {
-        const stores = await Store.find();
-        return res.json({data: stores})
+        const stores = await Store.aggregate([
+            {$match: {}},
+            {
+                $facet: {
+                    metadata: [{$count: 'totalCount'}],
+                    data: [{$skip: page * pageSize}, {$limit: pageSize}]
+                }
+            }
+        ]);
+        return res.json(stores)
     } catch(err) {
        return next(err);
     }

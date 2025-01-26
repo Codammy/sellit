@@ -1,5 +1,5 @@
 import express from "express"
-import { createNewUser, getAuthenticatedUser, getUserById, updateUser } from "../controllers/UserController.js";
+import { createNewUser, getAuthenticatedUser, getUserById, updateUser, verifyEmail, requestEmailVerify } from "../controllers/UserController.js";
 import { createCatalog, removeFromCatalog, getAllCatalogs  } from "../controllers/CatalogController.js";
 import { passwordResetRequest, resetPassword, resetPasswordPage } from "../controllers/AuthController.js";
 const router = express.Router();
@@ -18,12 +18,16 @@ router.post('/new', createNewUser)
 
 router.put('/', updateUser);
 
-router.get('/password_reset', passwordResetRequest);
+router.put('/verify-email', verifyEmail);
 
-router.get('/password_reset/:token', resetPasswordPage)
+router.get('/request-email-verify', requestEmailVerify);
 
+router.get('/forgot-password', passwordResetRequest);
 
-router.post ('/reset_password', resetPassword);
+router.get('/password-reset/:token', resetPasswordPage)
+
+router.post ('/reset-password', resetPassword);
 
 router.get('/:id', getUserById);
+
 export default router;
