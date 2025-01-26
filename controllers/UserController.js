@@ -26,7 +26,7 @@ export async function createNewUser(req, res, next) {
         to: user.email,
         subject: "Verify email",
         text: "Verify your email address",
-        html: ejs.renderFile(
+        html: await ejs.renderFile(
             path.join(__dirname, "views", "activateAccount.ejs"),
             {user, otp}
         )
