@@ -62,10 +62,10 @@ export function getAuthenticatedUser(req, res) {
 
 export async function updateUser(req, res, next) {
     try {
-        const {profile, addr, social} = {...req.body};
-        if (!profile || !addr || !social) return res.status(400).json({error: "Bad Request"})
-        await User.findOneAndUpdate({_id: req.user.id}, {profile, addr, social});
-        return res.json({data: {profile, addr, social}})
+        const {profile, address, socials} = {...req.body};
+        if (!profile || !address || !socials) return res.status(400).json({error: "Bad Request"})
+        await User.findOneAndUpdate({_id: req.user.id}, {profile, address, socials});
+        return res.json({data: {profile, address, socials}})
     } catch (error) {
         console.log(error)
         return next(error)
