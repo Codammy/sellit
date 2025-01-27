@@ -12,7 +12,20 @@
 
 <p>A Rest Api E-commerce application that targets market sellers of different product and services to showcase, promote, sell their product online  and be in touch with potential buyers.</p>
 
-### Routes
+### How to use
+
+**Requirement to run project:**
+- nodejs
+ - mongodb server running on port 27017
+ - redis server running on port 6379
+ - Rest api client (e.g postman, apidog)
+
+```bash
+npm install
+npm start
+```
+
+### Endpoints
 
 | Users |Stores|Items|Reviews|Promotions|
 |----------| ---------| ------- | -----------| ----------|
