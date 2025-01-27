@@ -39,3 +39,4 @@ npm start
 | /users/forgot-password {**methods**: GET}|
 
 Proper api documentation link underway, reach if needed help.
+Say hello to <damisco005@gmail.com> if you need a copy of the .env file
